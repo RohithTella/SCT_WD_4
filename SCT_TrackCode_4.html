@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #task-form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="datetime-local"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+        }
+
+        li.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .task-actions button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .task-actions button:hover {
+            background-color: #e53935;
+        }
+
+        .edit {
+            background-color: #ff9800;
+        }
+
+        .edit:hover {
+            background-color: #fb8c00;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>To-Do App</h1>
+
+    <form id="task-form">
+        <input type="text" id="task-input" placeholder="Enter new task..." required>
+        <input type="datetime-local" id="task-time">
+        <button type="submit">Add Task</button>
+    </form>
+
+    <ul id="task-list"></ul>
+
+    <script>
+        document.getElementById('task-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            addTask();
+        });
+
+        function addTask() {
+            const taskInput = document.getElementById('task-input');
+            const taskTime = document.getElementById('task-time').value;
+            const taskList = document.getElementById('task-list');
+
+            const li = document.createElement('li');
+            const taskText = taskInput.value;
+            const taskDateTime = taskTime ? ` (${taskTime})` : '';
+
+            li.innerHTML = `
+                <span>${taskText}${taskDateTime}</span>
+                <div class="task-actions">
+                    <button onclick="editTask(this)" class="edit">Edit</button>
+                    <button onclick="toggleComplete(this)">Complete</button>
+                    <button onclick="deleteTask(this)">Delete</button>
+                </div>
+            `;
+
+            taskList.appendChild(li);
+            taskInput.value = '';
+            document.getElementById('task-time').value = '';
+        }
+
+        function toggleComplete(button) {
+            const li = button.parentNode.parentNode;
+            li.classList.toggle('completed');
+        }
+
+        function deleteTask(button) {
+            const li = button.parentNode.parentNode;
+            li.remove();
+        }
+
+        function editTask(button) {
+            const li = button.parentNode.parentNode;
+            const taskText = li.querySelector('span').textContent.split(' (')[0];
+            const taskInput = document.getElementById('task-input');
+            const taskTimeInput = document.getElementById('task-time');
+
+            taskInput.value = taskText;
+            const dateTimeMatch = li.querySelector('span').textContent.match(/\(([^)]+)\)/);
+            taskTimeInput.value = dateTimeMatch ? dateTimeMatch[1] : '';
+
+            li.remove();
+        }
+    </script>
+</body>
+</html>
